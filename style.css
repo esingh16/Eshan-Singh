@@ -1287,3 +1287,193 @@ body.cursor-hover .cursor-follower { width: 50px; height: 50px; opacity: 0.25; }
   .footer-nav { margin-left: 0; }
   .photo-wrap { width: 280px; height: 320px; }
 }
+
+
+/* ══════════════════════════════════════════════════════════
+   PATCH v2 — fixes + polish
+══════════════════════════════════════════════════════════ */
+
+/* ── NAV hide on scroll down ── */
+#nav {
+  transition: background var(--transition), box-shadow var(--transition),
+              transform 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+#nav.nav-hidden { transform: translateY(-100%); }
+
+/* ── Active nav link ── */
+.nl.nl-active {
+  color: var(--jade) !important;
+  background: var(--jade-dim);
+}
+.nl.nl-active::after { left: 14px; right: 14px; }
+
+/* ── Stats strip — ensure counter visible ── */
+.stat-num {
+  display: inline;
+  font-family: 'Fraunces', serif;
+  font-size: 40px; font-weight: 900;
+  color: var(--jade); line-height: 1;
+  min-width: 2ch;
+}
+.stat-item { position: relative; }
+
+/* ── Skill bar — explicit initial state ── */
+.sk-fill {
+  width: 0 !important;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+.sk-fill.animated { width: var(--pct) !important; }
+
+/* ── Section chip glow transition ── */
+.section-chip {
+  transition: box-shadow 0.4s ease;
+}
+
+/* ── Timeline dot transition ── */
+.tl-dot {
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), background 0.3s, box-shadow 0.3s;
+}
+
+/* ── Photo — ensure visible when image loads ── */
+.hero-photo {
+  opacity: 0;
+  transition: opacity 0.6s ease, border-radius 8s ease-in-out,
+              box-shadow 0.4s ease !important;
+}
+.hero-photo.loaded { opacity: 1; }
+
+/* ── Float badges — ensure on top of photo ── */
+.float-badge { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+[data-theme="light"] .float-badge { background: rgba(255,255,255,0.92); }
+[data-theme="dark"]  .float-badge { background: rgba(22,29,39,0.92); }
+
+/* ── Projects grid — featured card title larger ── */
+.proj-card.featured .proj-title { font-size: 28px; }
+.proj-card.featured .proj-desc  { font-size: 14.5px; }
+
+/* ── Tl card — left glow border color fix ── */
+.tl-card::before { border-radius: 0 0 0 var(--radius); }
+
+/* ── Education GPA glow ── */
+.edu-gpa {
+  transition: text-shadow 0.5s ease;
+}
+.edu-card:hover .edu-gpa {
+  text-shadow: 0 0 48px var(--glow-jade), 0 0 80px var(--glow-teal);
+}
+
+/* ── Contact link left-padding transition fix ── */
+.clink { transition: border-color 0.3s, padding-left 0.35s cubic-bezier(0.4,0,0.2,1), transform 0.3s, box-shadow 0.3s; }
+
+/* ── Back to top — always visible ── */
+.back-top { opacity: 1; }
+
+/* ── Scroll hint — hide when scrolled ── */
+.hero.scrolled-hero .scroll-hint { opacity: 0; pointer-events: none; }
+
+/* ── Smooth image loading ── */
+img { opacity: 0; transition: opacity 0.6s ease; }
+img[src] { opacity: 1; }
+
+/* ── Section heading line-height fix ── */
+.section-title { line-height: 1.1; }
+
+/* ── About card hover border ── */
+.about-card:hover { border-color: var(--jade); }
+[data-theme="light"] .about-card { background: var(--surface); }
+
+/* ── Cert item hover ── */
+.cert-item:hover { border-color: var(--jade); }
+
+/* ── Mobile nav animation ── */
+.nav-links {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+@media (max-width: 900px) {
+  .nav-links {
+    opacity: 0; pointer-events: none;
+    transform: translateY(-8px);
+  }
+  .nav-links.open {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0);
+  }
+}
+
+/* ── Better focus styles for accessibility ── */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--jade);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Improve dark mode surface card contrast ── */
+[data-theme="dark"] .tl-card,
+[data-theme="dark"] .proj-card,
+[data-theme="dark"] .edu-card,
+[data-theme="dark"] .cert-item,
+[data-theme="dark"] .about-card,
+[data-theme="dark"] .clink {
+  border-color: rgba(255,255,255,0.10);
+}
+[data-theme="dark"] .tl-card:hover,
+[data-theme="dark"] .proj-card:hover,
+[data-theme="dark"] .edu-card:hover,
+[data-theme="dark"] .cert-item:hover,
+[data-theme="dark"] .about-card:hover,
+[data-theme="dark"] .clink:hover {
+  border-color: var(--jade);
+}
+
+/* ── Glow text only when in view ── */
+.glow-text { animation: none; }
+.aos-animate .glow-text,
+.hl-line.glow-text { animation: text-glow 3s ease-in-out infinite; }
+
+/* ── Stat number + suffix alignment ── */
+.stat-item {
+  display: flex; flex-direction: column; align-items: center;
+}
+.stat-item > span:first-child + .stat-suf {
+  display: none; /* handled inline in HTML */
+}
+.stat-val-row {
+  display: flex; align-items: baseline; gap: 1px; justify-content: center;
+}
+
+/* ── Improve skill tab underline ── */
+.skill-tab { font-size: 13px; padding: 11px 20px; }
+@media (max-width: 640px) {
+  .skill-tab { font-size: 12px; padding: 9px 12px; }
+}
+
+/* ── Project number watermark — light mode fix ── */
+[data-theme="light"] .proj-num { color: rgba(0,0,0,0.05); }
+[data-theme="light"] .proj-card:hover .proj-num { color: rgba(10,124,92,0.08); }
+
+/* ── Contact badges ── */
+.cbadge {
+  transition: all var(--transition);
+  cursor: default;
+}
+.cbadge:hover {
+  border-color: var(--jade);
+  color: var(--jade);
+  background: var(--jade-dim);
+  transform: translateY(-2px);
+}
+
+/* ── @keyframes slideUp (used by easter egg) ── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Print styles ── */
+@media print {
+  .cursor, .cursor-follower, .theme-toggle,
+  #nav, .scroll-hint, .hero-bg-orbs,
+  .hero-grid-lines, .orb { display: none !important; }
+  body { cursor: auto; }
+  .section { padding: 32px 0; }
+}
