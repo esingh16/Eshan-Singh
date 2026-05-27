@@ -1,1339 +1,675 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Eshan Singh — Data Scientist & AI Engineer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #080c10;
-    --surface: #0d1117;
-    --surface2: #111820;
-    --gold: #c9a84c;
-    --gold-dim: #8a6e2f;
-    --gold-glow: rgba(201,168,76,0.15);
-    --text: #e8e0d0;
-    --text-muted: #7a7060;
-    --text-dim: #4a4438;
-    --accent: #4f9cf9;
-    --green: #3ecf8e;
-    --border: rgba(201,168,76,0.12);
-    --border-bright: rgba(201,168,76,0.35);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 14px;
-    line-height: 1.7;
-    overflow-x: hidden;
-    cursor: none;
-  }
-
-  /* CUSTOM CURSOR */
-  .cursor {
-    width: 10px; height: 10px;
-    background: var(--gold);
-    border-radius: 50%;
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
-    mix-blend-mode: difference;
-  }
-  .cursor-ring {
-    width: 36px; height: 36px;
-    border: 1px solid var(--gold);
-    border-radius: 50%;
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: transform 0.15s ease-out, width 0.3s, height 0.3s, opacity 0.3s;
-    opacity: 0.5;
-  }
-  body:hover .cursor-ring { opacity: 0.5; }
-
-  /* NOISE TEXTURE */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0.4;
-  }
-
-  /* NAVBAR */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 20px 60px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid transparent;
-    transition: all 0.4s;
-    backdrop-filter: blur(0px);
-  }
-  nav.scrolled {
-    border-bottom-color: var(--border);
-    background: rgba(8,12,16,0.88);
-    backdrop-filter: blur(20px);
-    padding: 14px 60px;
-  }
-  .nav-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    color: var(--gold);
-    letter-spacing: 0.05em;
-    text-decoration: none;
-  }
-  .nav-links { display: flex; gap: 36px; list-style: none; }
-  .nav-links a {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.2s;
-    position: relative;
-  }
-  .nav-links a::after {
-    content: '';
-    position: absolute; bottom: -2px; left: 0;
-    width: 0; height: 1px;
-    background: var(--gold);
-    transition: width 0.3s;
-  }
-  .nav-links a:hover { color: var(--gold); }
-  .nav-links a:hover::after { width: 100%; }
-
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    padding: 120px 60px 80px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-grid-bg {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
-  }
-
-  .hero-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-  }
-  .hero-orb-1 {
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
-    top: -100px; right: -100px;
-  }
-  .hero-orb-2 {
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(79,156,249,0.08) 0%, transparent 70%);
-    bottom: 0; left: 100px;
-  }
-
-  .hero-left { position: relative; z-index: 2; }
-
-  .hero-tag {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--gold);
-    border: 1px solid var(--border-bright);
-    padding: 6px 14px;
-    border-radius: 2px;
-    margin-bottom: 32px;
-    opacity: 0;
-    animation: fadeUp 0.8s 0.2s forwards;
-  }
-  .hero-tag::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: var(--gold);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.7); }
-  }
-
-  .hero-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(60px, 7vw, 96px);
-    font-weight: 300;
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    margin-bottom: 24px;
-    opacity: 0;
-    animation: fadeUp 0.8s 0.4s forwards;
-  }
-  .hero-name span {
-    display: block;
-    color: var(--gold);
-    font-style: italic;
-  }
-
-  .hero-desc {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    color: var(--text-muted);
-    max-width: 420px;
-    line-height: 1.8;
-    margin-bottom: 48px;
-    opacity: 0;
-    animation: fadeUp 0.8s 0.6s forwards;
-  }
-
-  .hero-ctas {
-    display: flex; gap: 16px; flex-wrap: wrap;
-    opacity: 0;
-    animation: fadeUp 0.8s 0.8s forwards;
-  }
-
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: var(--gold);
-    color: var(--bg);
-    padding: 14px 28px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-weight: 500;
-    text-decoration: none;
-    border: none; cursor: none;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-primary::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: rgba(255,255,255,0.15);
-    transform: translateX(-100%);
-    transition: transform 0.3s;
-  }
-  .btn-primary:hover::after { transform: translateX(0); }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,168,76,0.3); }
-
-  .btn-outline {
-    display: inline-flex; align-items: center; gap: 10px;
-    border: 1px solid var(--border-bright);
-    color: var(--text-muted);
-    padding: 14px 28px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.3s;
-    cursor: none;
-  }
-  .btn-outline:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: var(--gold-glow);
-  }
-
-  /* HERO RIGHT — PHOTO */
-  .hero-right {
-    position: relative; z-index: 2;
-    display: flex; justify-content: flex-end; align-items: center;
-    opacity: 0;
-    animation: fadeIn 1s 1s forwards;
-  }
-  .photo-frame {
-    position: relative;
-    width: 360px; height: 420px;
-  }
-  .photo-frame::before {
-    content: '';
-    position: absolute;
-    top: 18px; left: 18px; right: -18px; bottom: -18px;
-    border: 1px solid var(--border-bright);
-    pointer-events: none;
-    z-index: 0;
-  }
-  .photo-frame::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(180deg, transparent 60%, var(--bg) 100%);
-    z-index: 2;
-  }
-  .photo-frame img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    filter: grayscale(30%) contrast(1.1);
-    position: relative; z-index: 1;
-    display: block;
-  }
-  .photo-badge {
-    position: absolute;
-    bottom: -24px; right: -24px;
-    background: var(--surface2);
-    border: 1px solid var(--border-bright);
-    padding: 16px 20px;
-    z-index: 3;
-    text-align: center;
-  }
-  .photo-badge .num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
-    font-weight: 600;
-    color: var(--gold);
-    line-height: 1;
-  }
-  .photo-badge .label {
-    font-size: 9px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
-
-  /* STATS */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    position: relative; z-index: 2;
-    margin: 0 60px;
-    overflow: hidden;
-  }
-  .stat {
-    padding: 32px 40px;
-    border-right: 1px solid var(--border);
-    opacity: 0;
-    animation: fadeUp 0.6s forwards;
-  }
-  .stat:last-child { border-right: none; }
-  .stat:nth-child(1) { animation-delay: 1.2s; }
-  .stat:nth-child(2) { animation-delay: 1.35s; }
-  .stat:nth-child(3) { animation-delay: 1.5s; }
-  .stat:nth-child(4) { animation-delay: 1.65s; }
-  .stat-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 42px;
-    font-weight: 600;
-    color: var(--gold);
-    line-height: 1;
-  }
-  .stat-label {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-top: 6px;
-  }
-
-  /* SECTIONS */
-  section { padding: 100px 60px; position: relative; }
-  section + section { border-top: 1px solid var(--border); }
-
-  .section-header {
-    display: flex; align-items: baseline; gap: 24px;
-    margin-bottom: 60px;
-  }
-  .section-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--gold);
-    letter-spacing: 0.1em;
-  }
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(36px, 4vw, 52px);
-    font-weight: 300;
-    line-height: 1;
-    letter-spacing: -0.01em;
-  }
-  .section-line {
-    flex: 1; height: 1px;
-    background: var(--border);
-    align-self: center;
-  }
-
-  /* SKILLS */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-  }
-  .skill-cat {
-    background: var(--surface);
-    padding: 32px;
-    border: 1px solid var(--border);
-    transition: border-color 0.3s, background 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-  .skill-cat::before {
-    content: '';
-    position: absolute; top: 0; left: 0;
-    width: 100%; height: 2px;
-    background: var(--gold);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s;
-  }
-  .skill-cat:hover { border-color: var(--border-bright); background: var(--surface2); }
-  .skill-cat:hover::before { transform: scaleX(1); }
-  .skill-cat-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 16px;
-  }
-  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-  .skill-tag {
-    font-size: 11px;
-    color: var(--text-muted);
-    background: rgba(201,168,76,0.06);
-    border: 1px solid var(--border);
-    padding: 4px 10px;
-    transition: all 0.2s;
-  }
-  .skill-tag:hover {
-    color: var(--gold);
-    border-color: var(--gold);
-    background: var(--gold-glow);
-  }
-
-  /* EXPERIENCE */
-  .exp-list { display: flex; flex-direction: column; gap: 2px; }
-  .exp-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 36px 40px;
-    display: grid;
-    grid-template-columns: 200px 1fr auto;
-    gap: 32px;
-    align-items: start;
-    transition: all 0.3s;
-    cursor: default;
-    position: relative;
-    overflow: hidden;
-  }
-  .exp-item::before {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--gold);
-    transform: scaleY(0);
-    transition: transform 0.3s;
-  }
-  .exp-item:hover { border-color: var(--border-bright); background: var(--surface2); }
-  .exp-item:hover::before { transform: scaleY(1); }
-  .exp-meta { }
-  .exp-company {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--gold);
-    letter-spacing: 0.05em;
-    margin-bottom: 4px;
-  }
-  .exp-loc {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-  }
-  .exp-body { }
-  .exp-role {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 1.2;
-    margin-bottom: 12px;
-    color: var(--text);
-  }
-  .exp-bullets { list-style: none; }
-  .exp-bullets li {
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    padding-left: 16px;
-    position: relative;
-    margin-bottom: 4px;
-  }
-  .exp-bullets li::before {
-    content: '─';
-    position: absolute; left: 0;
-    color: var(--gold-dim);
-  }
-  .exp-date {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    white-space: nowrap;
-    text-align: right;
-  }
-  .exp-badge {
-    display: inline-block;
-    font-size: 9px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border: 1px solid var(--border-bright);
-    color: var(--gold);
-    margin-top: 6px;
-  }
-
-  /* PROJECTS */
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-  }
-  .project-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 32px;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .project-card::after {
-    content: '';
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--gold), transparent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s;
-  }
-  .project-card:hover { border-color: var(--border-bright); background: var(--surface2); transform: translateY(-4px); }
-  .project-card:hover::after { transform: scaleX(1); }
-
-  .project-card.featured {
-    grid-column: span 2;
-    background: linear-gradient(135deg, var(--surface2) 0%, rgba(201,168,76,0.04) 100%);
-  }
-
-  .project-award {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 16px;
-    background: rgba(201,168,76,0.1);
-    border: 1px solid rgba(201,168,76,0.25);
-    padding: 4px 10px;
-    width: fit-content;
-  }
-  .project-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 1.2;
-    margin-bottom: 12px;
-    color: var(--text);
-  }
-  .project-desc {
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    flex: 1;
-    margin-bottom: 20px;
-  }
-  .project-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
-  .tech-chip {
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    background: rgba(79,156,249,0.07);
-    border: 1px solid rgba(79,156,249,0.2);
-    padding: 3px 8px;
-  }
-  .project-link {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-    text-decoration: none;
-    display: inline-flex; align-items: center; gap: 6px;
-    transition: gap 0.2s;
-  }
-  .project-link:hover { gap: 10px; }
-  .project-year {
-    position: absolute; top: 20px; right: 20px;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 42px;
-    font-weight: 300;
-    color: var(--border);
-    line-height: 1;
-    pointer-events: none;
-  }
-
-  /* EDUCATION */
-  .edu-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2px;
-  }
-  .edu-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 40px;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-  .edu-card:hover { border-color: var(--border-bright); }
-  .edu-degree {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 600;
-    line-height: 1.2;
-    margin-bottom: 8px;
-  }
-  .edu-school {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 12px;
-  }
-  .edu-meta {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-  }
-  .edu-gpa {
-    display: inline-block;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 48px;
-    font-weight: 600;
-    color: var(--gold);
-    line-height: 1;
-  }
-  .edu-gpa-label {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
-  .courses-list {
-    display: flex; flex-wrap: wrap; gap: 6px;
-    margin-top: 20px;
-  }
-  .course-chip {
-    font-size: 10px;
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    padding: 3px 8px;
-    transition: all 0.2s;
-  }
-  .course-chip:hover { color: var(--text-muted); border-color: rgba(201,168,76,0.2); }
-
-  /* CERTS */
-  .certs-row {
-    display: flex; flex-wrap: wrap; gap: 12px;
-  }
-  .cert-pill {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 14px 20px;
-    transition: all 0.3s;
-  }
-  .cert-pill:hover { border-color: var(--border-bright); background: var(--surface2); }
-  .cert-icon {
-    width: 28px; height: 28px;
-    background: var(--gold-glow);
-    border: 1px solid var(--border-bright);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px;
-    color: var(--gold);
-    flex-shrink: 0;
-  }
-  .cert-name {
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-
-  /* CONTACT */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: start;
-  }
-  .contact-intro {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 42px;
-    font-weight: 300;
-    line-height: 1.2;
-    margin-bottom: 24px;
-  }
-  .contact-intro em { color: var(--gold); font-style: italic; }
-  .contact-text { font-size: 12px; color: var(--text-muted); line-height: 1.8; }
-  .contact-links { display: flex; flex-direction: column; gap: 2px; }
-  .contact-link {
-    display: flex; align-items: center; justify-content: space-between;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 20px 24px;
-    text-decoration: none;
-    transition: all 0.3s;
-    cursor: none;
-  }
-  .contact-link:hover {
-    border-color: var(--border-bright);
-    background: var(--surface2);
-    padding-left: 30px;
-  }
-  .contact-link-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-  .contact-link-val { font-size: 12px; color: var(--text-muted); }
-  .contact-link-arrow { color: var(--gold-dim); font-size: 16px; }
-
-  /* FOOTER */
-  footer {
-    padding: 32px 60px;
-    border-top: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .footer-copy {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-  }
-  .footer-copy span { color: var(--gold); }
-  .footer-back-top {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.2s;
-    cursor: none;
-  }
-  .footer-back-top:hover { color: var(--gold); }
-
-  /* REVEAL ANIMATION */
-  .reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.7s, transform 0.7s;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @keyframes fadeUp {
-    to { opacity: 1; transform: translateY(0); }
-    from { opacity: 0; transform: translateY(20px); }
-  }
-  @keyframes fadeIn {
-    to { opacity: 1; }
-    from { opacity: 0; }
-  }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--gold-dim); }
-
-  /* MOBILE */
-  @media (max-width: 900px) {
-    nav { padding: 18px 24px; }
-    nav.scrolled { padding: 12px 24px; }
-    .nav-links { display: none; }
-    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; }
-    .hero-right { justify-content: center; }
-    .stats-row { grid-template-columns: 1fr 1fr; margin: 0 24px; }
-    section { padding: 60px 24px; }
-    .skills-grid { grid-template-columns: 1fr; }
-    .exp-item { grid-template-columns: 1fr; gap: 12px; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .project-card.featured { grid-column: span 1; }
-    .edu-grid { grid-template-columns: 1fr; }
-    .contact-grid { grid-template-columns: 1fr; gap: 32px; }
-    .photo-frame { width: 280px; height: 320px; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eshan Singh — Data Scientist & AI Engineer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-<!-- CURSOR -->
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="follower"></div>
 
-<!-- NAV -->
-<nav id="navbar">
-  <a href="#" class="nav-logo">ES</a>
-  <ul class="nav-links">
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#education">Education</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
+  <!-- THEME TOGGLE -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+    <span class="toggle-track">
+      <span class="toggle-sun">☀</span>
+      <span class="toggle-moon">☽</span>
+      <span class="toggle-thumb"></span>
+    </span>
+  </button>
 
-<!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-orb hero-orb-1"></div>
-  <div class="hero-orb hero-orb-2"></div>
-
-  <div class="hero-left">
-    <div class="hero-tag">Available for opportunities</div>
-    <h1 class="hero-name">
-      Eshan<br>
-      <span>Singh</span>
-    </h1>
-    <p class="hero-desc">
-      MS Data Science @ University of Maryland · Building intelligent systems at the intersection of AI, data engineering, and enterprise platforms.
-    </p>
-    <div class="hero-ctas">
-      <a href="Eshan_Resume.pdf" download class="btn-primary">
-        ↓ Download Resume
+  <!-- ─────────────── NAV ─────────────── -->
+  <nav id="nav">
+    <div class="nav-container">
+      <a href="#hero" class="logo">
+        <span class="logo-e">E</span><span class="logo-s">S</span>
       </a>
-      <a href="#contact" class="btn-outline">Get in Touch →</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about"      class="nl">About</a></li>
+        <li><a href="#skills"     class="nl">Skills</a></li>
+        <li><a href="#experience" class="nl">Experience</a></li>
+        <li><a href="#projects"   class="nl">Projects</a></li>
+        <li><a href="#education"  class="nl">Education</a></li>
+        <li><a href="#contact"    class="nl">Contact</a></li>
+      </ul>
+      <a href="Eshan_Resume.pdf" download class="nav-resume-btn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 7l3 3 3-3M2 12h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Resume
+      </a>
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-  </div>
+  </nav>
 
-  <div class="hero-right">
-    <div class="photo-frame">
-      <img src="eshan.jpg" alt="Eshan Singh" />
-      <div class="photo-badge">
-        <div class="num">3.83</div>
-        <div class="label">GPA</div>
-      </div>
+  <!-- ─────────────── HERO ─────────────── -->
+  <section id="hero" class="hero">
+    <div class="hero-bg-orbs">
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="orb orb3"></div>
     </div>
-  </div>
-</section>
+    <div class="hero-grid-lines"></div>
 
-<!-- STATS -->
-<div class="stats-row">
-  <div class="stat">
-    <div class="stat-num">4+</div>
-    <div class="stat-label">Internships</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">2×</div>
-    <div class="stat-label">Hackathon Winner</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">8+</div>
-    <div class="stat-label">Projects</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">5+</div>
-    <div class="stat-label">Certifications</div>
-  </div>
-</div>
-
-<!-- SKILLS -->
-<section id="skills">
-  <div class="section-header reveal">
-    <span class="section-num">01</span>
-    <h2 class="section-title">Expertise</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="skills-grid">
-    <div class="skill-cat reveal">
-      <div class="skill-cat-title">Programming & Data</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Python</span>
-        <span class="skill-tag">SQL</span>
-        <span class="skill-tag">Java</span>
-        <span class="skill-tag">JavaScript</span>
-        <span class="skill-tag">Pandas</span>
-        <span class="skill-tag">NumPy</span>
-        <span class="skill-tag">Scikit-learn</span>
-        <span class="skill-tag">TensorFlow</span>
-        <span class="skill-tag">Keras</span>
-      </div>
-    </div>
-    <div class="skill-cat reveal">
-      <div class="skill-cat-title">Machine Learning & AI</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Supervised Learning</span>
-        <span class="skill-tag">Deep Learning</span>
-        <span class="skill-tag">NLP</span>
-        <span class="skill-tag">Clustering</span>
-        <span class="skill-tag">RAG</span>
-        <span class="skill-tag">LLMs</span>
-        <span class="skill-tag">LangChain</span>
-        <span class="skill-tag">Agentic AI</span>
-        <span class="skill-tag">Vector DBs</span>
-      </div>
-    </div>
-    <div class="skill-cat reveal">
-      <div class="skill-cat-title">Enterprise & Cloud</div>
-      <div class="skill-tags">
-        <span class="skill-tag">AWS</span>
-        <span class="skill-tag">Azure</span>
-        <span class="skill-tag">GCP</span>
-        <span class="skill-tag">Salesforce</span>
-        <span class="skill-tag">ServiceNow</span>
-        <span class="skill-tag">UiPath (RPA)</span>
-        <span class="skill-tag">ETL Pipelines</span>
-        <span class="skill-tag">REST/SOAP APIs</span>
-      </div>
-    </div>
-    <div class="skill-cat reveal">
-      <div class="skill-cat-title">Analytics & BI</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Tableau</span>
-        <span class="skill-tag">Power BI</span>
-        <span class="skill-tag">Excel (DAX)</span>
-        <span class="skill-tag">EDA</span>
-        <span class="skill-tag">A/B Testing</span>
-        <span class="skill-tag">Time-Series</span>
-        <span class="skill-tag">Hypothesis Testing</span>
-      </div>
-    </div>
-    <div class="skill-cat reveal">
-      <div class="skill-cat-title">Tools & DevOps</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Git / GitHub</span>
-        <span class="skill-tag">Jupyter</span>
-        <span class="skill-tag">Firebase</span>
-        <span class="skill-tag">Android Studio</span>
-        <span class="skill-tag">FastAPI</span>
-        <span class="skill-tag">Flask</span>
-        <span class="skill-tag">React</span>
-        <span class="skill-tag">Node.js</span>
-      </div>
-    </div>
-    <div class="skill-cat reveal">
-      <div class="skill-cat-title">Methodologies</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Agile / Scrum</span>
-        <span class="skill-tag">Feature Engineering</span>
-        <span class="skill-tag">Explainable AI</span>
-        <span class="skill-tag">Predictive Analytics</span>
-        <span class="skill-tag">FHIR Standards</span>
-        <span class="skill-tag">Ensemble Methods</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- EXPERIENCE -->
-<section id="experience">
-  <div class="section-header reveal">
-    <span class="section-num">02</span>
-    <h2 class="section-title">Experience</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="exp-list">
-
-    <div class="exp-item reveal">
-      <div class="exp-meta">
-        <div class="exp-company">ServBeyond Solutions</div>
-        <div class="exp-loc">Rockville, MD</div>
-        <div class="exp-badge">Current</div>
-      </div>
-      <div class="exp-body">
-        <div class="exp-role">Enterprise AI & Platform Intern</div>
-        <ul class="exp-bullets">
-          <li>Configuring and administering enterprise COTS platforms including Salesforce, ServiceNow, OpenText, AWS, and UiPath, ensuring optimal system performance and workflow alignment.</li>
-          <li>Developing proof-of-concept workflows leveraging Agentic AI and Generative AI to automate and enhance business processes within existing enterprise platform ecosystems.</li>
-          <li>Building and testing REST/SOAP API integrations to enable seamless data flow between core enterprise platforms and external tools, reducing manual handoffs.</li>
-          <li>Participating in Agile/Scrum ceremonies and collaborating with cross-functional teams; authoring technical documentation and user guides for internal stakeholders.</li>
-        </ul>
-      </div>
-      <div class="exp-date">Jun 2025<br>— Present</div>
-    </div>
-
-    <div class="exp-item reveal">
-      <div class="exp-meta">
-        <div class="exp-company">Univ. of Maryland</div>
-        <div class="exp-loc">College Park, MD</div>
-      </div>
-      <div class="exp-body">
-        <div class="exp-role">STEM Tutor</div>
-        <ul class="exp-bullets">
-          <li>Tutoring veteran Engineering students one-on-one and in group sessions across CS, AI, Data Science, and ML, breaking down advanced concepts into intuitive, applicable frameworks.</li>
-          <li>Designing targeted study materials, coding exercises, and problem sets tailored to individual learning gaps, consistently improving student performance on exams and project deliverables.</li>
-        </ul>
-      </div>
-      <div class="exp-date">Mar 2026<br>— Present</div>
-    </div>
-
-    <div class="exp-item reveal">
-      <div class="exp-meta">
-        <div class="exp-company">YBI Foundation</div>
-        <div class="exp-loc">New Delhi, India</div>
-      </div>
-      <div class="exp-body">
-        <div class="exp-role">Data Science & AIML Engineer Intern</div>
-        <ul class="exp-bullets">
-          <li>Built a handwritten digit classification system on MNIST using KNN, SVM, and CNN architectures with TensorFlow/Keras, achieving 87–92% accuracy.</li>
-          <li>Developed a bank customer churn prediction model using data preprocessing, feature engineering, and ML classifiers, delivering insights that informed retention-focused business strategies.</li>
-        </ul>
-      </div>
-      <div class="exp-date">Oct 2024<br>— Jan 2025</div>
-    </div>
-
-    <div class="exp-item reveal">
-      <div class="exp-meta">
-        <div class="exp-company">Nexus Info</div>
-        <div class="exp-loc">Coimbatore, India</div>
-      </div>
-      <div class="exp-body">
-        <div class="exp-role">AI/ML Engineer Intern</div>
-        <ul class="exp-bullets">
-          <li>Designed a real-time NLP chatbot for college admissions using NLTK and Flask, automating query resolution and enhancing intent recognition and user engagement.</li>
-          <li>Engineered a multi-class disease prediction system (Gastrointestinal & Skin Disorders) using Random Forest and XGBoost with custom Feature Engineering and Ensemble Learning.</li>
-        </ul>
-      </div>
-      <div class="exp-date">Dec 2023<br>— Mar 2024</div>
-    </div>
-
-    <div class="exp-item reveal">
-      <div class="exp-meta">
-        <div class="exp-company">Codsoft</div>
-        <div class="exp-loc">Remote</div>
-      </div>
-      <div class="exp-body">
-        <div class="exp-role">Data Science Intern</div>
-        <ul class="exp-bullets">
-          <li>Developed and deployed ML models for Titanic survival prediction, sales forecasting, and credit card fraud detection, leveraging classification and regression techniques in Python.</li>
-          <li>Performed data preprocessing, feature engineering, and model evaluation (precision, recall, F1-score), addressing class imbalance to enhance prediction accuracy.</li>
-        </ul>
-      </div>
-      <div class="exp-date">Aug 2023<br>— Sep 2023</div>
-    </div>
-
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="section-header reveal">
-    <span class="section-num">03</span>
-    <h2 class="section-title">Projects</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="projects-grid">
-
-    <div class="project-card featured reveal">
-      <div class="project-year">2026</div>
-      <div class="project-award">🏆 UMD Agentic AI Challenge Winner</div>
-      <div class="project-title">ComplaintAI — Fintech Compliance Intelligence</div>
-      <div class="project-desc">A multi-agent fintech compliance system automating end-to-end complaint triage — intelligently routing, prioritizing, and resolving consumer complaints while performing real-time fairness auditing to detect bias and ensure regulatory compliance, reducing manual review overhead across financial services.</div>
-      <div class="project-tech">
-        <span class="tech-chip">Claude AI</span>
-        <span class="tech-chip">FastAPI</span>
-        <span class="tech-chip">React</span>
-        <span class="tech-chip">Multi-Agent</span>
-        <span class="tech-chip">CFPB Data</span>
-        <span class="tech-chip">Fairness Auditing</span>
-      </div>
-      <a href="https://complaint-ai-kappa.vercel.app" target="_blank" class="project-link">View Live →</a>
-    </div>
-
-    <div class="project-card reveal">
-      <div class="project-award">🏆 1st Place — UMD SAC Datathon</div>
-      <div class="project-title">Maryland TOD-AI Dashboard</div>
-      <div class="project-desc">4 end-to-end ML pipelines across 28 real Maryland datasets generating data-driven transit investment and equity recommendations. Features K-Means clustering, PCA, Monte Carlo simulation, cosine similarity, and Haversine geospatial analysis.</div>
-      <div class="project-tech">
-        <span class="tech-chip">Streamlit</span>
-        <span class="tech-chip">K-Means</span>
-        <span class="tech-chip">PCA</span>
-        <span class="tech-chip">Monte Carlo</span>
-        <span class="tech-chip">Geospatial</span>
-      </div>
-      <a href="https://maryland-tod-ai.streamlit.app" target="_blank" class="project-link">View Live →</a>
-    </div>
-
-    <div class="project-card reveal">
-      <div class="project-award">🥈 2nd Place — UMD Gemini Hackathon</div>
-      <div class="project-title">Care Compass — Health-Tech Platform</div>
-      <div class="project-desc">Full-stack care coordination platform using React and Node.js, leveraging FHIR standards for real-time risk assessment. Architected RESTful APIs with MongoDB for high-volume concurrent patient data; integrated Google Maps API for patient-provider proximity visualization.</div>
-      <div class="project-tech">
-        <span class="tech-chip">React</span>
-        <span class="tech-chip">Node.js</span>
-        <span class="tech-chip">FHIR</span>
-        <span class="tech-chip">MongoDB</span>
-        <span class="tech-chip">Google Maps</span>
-      </div>
-    </div>
-
-    <div class="project-card reveal">
-      <div class="project-title">AI-Based Career Counselling System</div>
-      <div class="project-desc">Android application with voice-enabled NLP, Google Cloud Speech API, and GPT models. Used RAG for dynamic context-aware recommendations. Published at WRFER National Conference.</div>
-      <div class="project-tech">
-        <span class="tech-chip">RAG</span>
-        <span class="tech-chip">GPT</span>
-        <span class="tech-chip">Android</span>
-        <span class="tech-chip">NLP</span>
-        <span class="tech-chip">GCP</span>
-      </div>
-    </div>
-
-    <div class="project-card reveal">
-      <div class="project-title">Loan Default Risk Prediction</div>
-      <div class="project-desc">Binary classification model using Gradient Boosting to estimate the probability of loan default. Applied Explainable AI techniques (LIME) to provide transparent risk insights, improving decision-making for credit approval.</div>
-      <div class="project-tech">
-        <span class="tech-chip">XGBoost</span>
-        <span class="tech-chip">LIME</span>
-        <span class="tech-chip">Explainable AI</span>
-        <span class="tech-chip">Feature Eng.</span>
-      </div>
-    </div>
-
-    <div class="project-card reveal">
-      <div class="project-title">Stock Return & Risk Prediction</div>
-      <div class="project-desc">Built XGBoost and LSTM models to predict returns and downside risk using OHLCV data. Evaluated portfolio performance via Sharpe Ratio and used SHAP values for model explainability.</div>
-      <div class="project-tech">
-        <span class="tech-chip">LSTM</span>
-        <span class="tech-chip">XGBoost</span>
-        <span class="tech-chip">SHAP</span>
-        <span class="tech-chip">OHLCV</span>
-        <span class="tech-chip">Sharpe Ratio</span>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- EDUCATION -->
-<section id="education">
-  <div class="section-header reveal">
-    <span class="section-num">04</span>
-    <h2 class="section-title">Education</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="edu-grid">
-    <div class="edu-card reveal">
-      <div class="edu-school">University of Maryland, College Park</div>
-      <div class="edu-degree">MS in Data Science</div>
-      <div class="edu-meta">Aug 2025 – May 2027 · College Park, MD</div>
-      <div class="edu-gpa">3.83</div>
-      <div class="edu-gpa-label">Cumulative GPA / 4.0</div>
-      <div class="courses-list">
-        <span class="course-chip">DATA 602 · Intro to Data Science</span>
-        <span class="course-chip">DATA 603 · Intro to ML</span>
-        <span class="course-chip">DATA 604 · Data Representation & Modeling</span>
-        <span class="course-chip">DATA 605 · Big Data Systems</span>
-        <span class="course-chip">DATA 606 · Algorithms for Data Science</span>
-        <span class="course-chip">DATA 607 · Communication in DS</span>
-        <span class="course-chip">DATA 643 · Time Series Analysis</span>
-        <span class="course-chip">MSAI 633 · Agentic AI</span>
-      </div>
-    </div>
-    <div class="edu-card reveal">
-      <div class="edu-school">Savitribai Phule Pune University</div>
-      <div class="edu-degree">BE in AI & Data Science<br><small style="font-size:18px;font-weight:300;color:var(--text-muted)">Honours in AIML</small></div>
-      <div class="edu-meta">Nov 2021 – Jun 2025 · Pune, India</div>
-      <div class="edu-gpa">3.6</div>
-      <div class="edu-gpa-label">Cumulative GPA / 4.0</div>
-      <div class="courses-list">
-        <span class="course-chip">Machine Learning</span>
-        <span class="course-chip">Deep Learning</span>
-        <span class="course-chip">NLP</span>
-        <span class="course-chip">Computer Vision</span>
-        <span class="course-chip">Data Mining</span>
-        <span class="course-chip">Statistics & Probability</span>
-        <span class="course-chip">Algorithms & DSA</span>
-        <span class="course-chip">Cloud Computing</span>
-      </div>
-    </div>
-  </div>
-
-  <div style="margin-top: 48px;">
-    <div class="section-header reveal" style="margin-bottom: 24px;">
-      <span class="section-num" style="font-size:10px;">CERTIFICATIONS</span>
-      <div class="section-line"></div>
-    </div>
-    <div class="certs-row reveal">
-      <div class="cert-pill"><div class="cert-icon">G</div><div class="cert-name">Google Data Analytics</div></div>
-      <div class="cert-pill"><div class="cert-icon">G</div><div class="cert-name">Google AI Essentials</div></div>
-      <div class="cert-pill"><div class="cert-icon">MS</div><div class="cert-name">Microsoft & LinkedIn Data Analysis</div></div>
-      <div class="cert-pill"><div class="cert-icon">IBM</div><div class="cert-name">IBM Python for Data Science</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="section-header reveal">
-    <span class="section-num">05</span>
-    <h2 class="section-title">Contact</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="contact-grid">
-    <div class="reveal">
-      <div class="contact-intro">
-        Let's build something <em>intelligent</em> together.
-      </div>
-      <p class="contact-text">
-        Currently pursuing MS Data Science at the University of Maryland and actively seeking full-time roles and internships in Data Science, AI/ML, and Data Engineering. Open to collaborations, research opportunities, and impactful projects.
-      </p>
-    </div>
-    <div class="contact-links reveal">
-      <a href="mailto:esingh16@umd.edu" class="contact-link">
-        <div>
-          <div class="contact-link-label">Email</div>
-          <div class="contact-link-val">esingh16@umd.edu</div>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-eyebrow" data-aos="fade-up" data-aos-delay="0">
+          <span class="eyebrow-dot"></span>
+          <span>Available for Opportunities · 2026</span>
         </div>
-        <div class="contact-link-arrow">↗</div>
-      </a>
-      <a href="https://github.com/esingh16" target="_blank" class="contact-link">
-        <div>
-          <div class="contact-link-label">GitHub</div>
-          <div class="contact-link-val">github.com/esingh16</div>
+
+        <h1 class="hero-heading" data-aos="fade-up" data-aos-delay="100">
+          <span class="hl-line">Data</span>
+          <span class="hl-line italic glow-text">Scientist</span>
+          <span class="hl-line">&amp; AI Builder</span>
+        </h1>
+
+        <div class="hero-name-tag" data-aos="fade-up" data-aos-delay="200">
+          <span class="tag-name">Eshan Singh</span>
+          <span class="tag-div">|</span>
+          <span class="tag-role">MS Data Science @ UMD</span>
         </div>
-        <div class="contact-link-arrow">↗</div>
-      </a>
-      <a href="https://linkedin.com/in/eshan-singh-708752242" target="_blank" class="contact-link">
-        <div>
-          <div class="contact-link-label">LinkedIn</div>
-          <div class="contact-link-val">linkedin.com/in/eshan-singh-708752242</div>
+
+        <p class="hero-bio" data-aos="fade-up" data-aos-delay="300">
+          Building intelligent systems — from agentic AI pipelines to enterprise platforms.
+          2× hackathon winner. GPA 3.9. Passionate about turning raw data into decisions that matter.
+        </p>
+
+        <div class="hero-btns" data-aos="fade-up" data-aos-delay="400">
+          <a href="#projects" class="btn-main">
+            Explore Work
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="Eshan_Resume.pdf" download class="btn-outline">
+            Download CV
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v7M5 8l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
         </div>
-        <div class="contact-link-arrow">↗</div>
-      </a>
-      <a href="tel:2272591592" class="contact-link">
-        <div>
-          <div class="contact-link-label">Phone</div>
-          <div class="contact-link-val">227-259-1592</div>
+
+        <div class="hero-socials" data-aos="fade-up" data-aos-delay="500">
+          <a href="https://github.com/esingh16" target="_blank" class="social-chip">GitHub</a>
+          <a href="https://linkedin.com/in/eshan-singh-708752242" target="_blank" class="social-chip">LinkedIn</a>
+          <a href="mailto:esingh16@umd.edu" class="social-chip">Email</a>
         </div>
-        <div class="contact-link-arrow">↗</div>
-      </a>
-      <a href="Eshan_Resume.pdf" download class="contact-link">
-        <div>
-          <div class="contact-link-label">Resume</div>
-          <div class="contact-link-val">Download PDF</div>
+      </div>
+
+      <div class="hero-right" data-aos="zoom-in" data-aos-delay="200">
+        <div class="photo-wrap">
+          <div class="photo-ring-outer"></div>
+          <div class="photo-ring-inner"></div>
+          <img src="eshan.jpg" alt="Eshan Singh" class="hero-photo" />
+          <div class="photo-shine"></div>
+          <div class="float-badge badge-gpa">
+            <span class="fb-num">3.9</span>
+            <span class="fb-label">GPA</span>
+          </div>
+          <div class="float-badge badge-win">
+            <span class="fb-num">2×</span>
+            <span class="fb-label">Winner</span>
+          </div>
+          <div class="float-badge badge-proj">
+            <span class="fb-num">8+</span>
+            <span class="fb-label">Projects</span>
+          </div>
         </div>
-        <div class="contact-link-arrow">↓</div>
-      </a>
+      </div>
     </div>
-  </div>
-</section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-copy">© 2026 <span>Eshan Singh</span> · MS Data Science, UMD</div>
-  <a href="#home" class="footer-back-top">↑ Back to top</a>
-</footer>
+    <!-- STATS STRIP -->
+    <div class="stats-strip" data-aos="fade-up" data-aos-delay="600">
+      <div class="stat-item">
+        <span class="stat-num" data-count="4">0</span><span class="stat-suf">+</span>
+        <span class="stat-lbl">Internships</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <span class="stat-num" data-count="2">0</span><span class="stat-suf">×</span>
+        <span class="stat-lbl">Hackathon Wins</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <span class="stat-num" data-count="8">0</span><span class="stat-suf">+</span>
+        <span class="stat-lbl">Projects Built</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <span class="stat-num" data-count="92">0</span><span class="stat-suf">%</span>
+        <span class="stat-lbl">Best ML Accuracy</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <span class="stat-num" data-count="5">0</span><span class="stat-suf">+</span>
+        <span class="stat-lbl">Certifications</span>
+      </div>
+    </div>
 
-<script>
-  // CURSOR
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
+    <div class="scroll-hint">
+      <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+      <span>Scroll to explore</span>
+    </div>
+  </section>
 
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx + 'px';
-    cursor.style.top = my + 'px';
-  });
+  <!-- ─────────────── ABOUT ─────────────── -->
+  <section id="about" class="section">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-chip">01 — About</span>
+        <h2 class="section-title">Who I Am</h2>
+      </div>
+      <div class="about-layout">
+        <div class="about-text" data-aos="fade-right">
+          <h3 class="about-sub">A data scientist who ships things that matter.</h3>
+          <p>MS Data Science student at the University of Maryland (GPA 3.9), graduating May 2027. I build end-to-end intelligent systems — from multi-agent AI pipelines to enterprise platform integrations — that move from notebook to production.</p>
+          <p>Winner of the UMD Agentic AI Challenge 2026 with ComplaintAI, and 1st Place at the UMD SAC Datathon 2026. Currently interning at ServBeyond Solutions building AI workflows on Salesforce, ServiceNow, AWS, and UiPath.</p>
+          <p>I bring a rare combination of strong ML fundamentals, hands-on GenAI/RAG engineering, and enterprise deployment experience — backed by 10+ years of customer-facing business exposure.</p>
+          <div class="lang-row">
+            <span class="lang-tag">English <em>Professional</em></span>
+            <span class="lang-tag">Hindi <em>Native</em></span>
+            <span class="lang-tag">Punjabi <em>Native</em></span>
+            <span class="lang-tag">German <em>Elementary</em></span>
+          </div>
+        </div>
+        <div class="about-cards" data-aos="fade-left">
+          <div class="about-card pop-card">
+            <div class="ac-icon">⚡</div>
+            <div class="ac-title">Agentic AI</div>
+            <div class="ac-desc">Multi-agent pipelines, LangChain, RAG, LLM orchestration & Claude AI</div>
+          </div>
+          <div class="about-card pop-card">
+            <div class="ac-icon">🧠</div>
+            <div class="ac-title">Machine Learning</div>
+            <div class="ac-desc">Supervised/unsupervised learning, deep learning, NLP, computer vision</div>
+          </div>
+          <div class="about-card pop-card">
+            <div class="ac-icon">☁️</div>
+            <div class="ac-title">Cloud & Enterprise</div>
+            <div class="ac-desc">AWS, Salesforce, ServiceNow, ETL pipelines, REST/SOAP APIs, UiPath RPA</div>
+          </div>
+          <div class="about-card pop-card">
+            <div class="ac-icon">📊</div>
+            <div class="ac-title">Data Analytics</div>
+            <div class="ac-desc">Tableau, Power BI, statistical analysis, A/B testing, time-series forecasting</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  function animateRing() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
-    requestAnimationFrame(animateRing);
-  }
-  animateRing();
+  <!-- ─────────────── SKILLS ─────────────── -->
+  <section id="skills" class="section section-alt">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-chip">02 — Skills</span>
+        <h2 class="section-title">Technical Arsenal</h2>
+      </div>
 
-  document.querySelectorAll('a, button, .skill-tag').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.width = '20px';
-      cursor.style.height = '20px';
-      ring.style.width = '60px';
-      ring.style.height = '60px';
-      ring.style.opacity = '0.3';
-    });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.width = '10px';
-      cursor.style.height = '10px';
-      ring.style.width = '36px';
-      ring.style.height = '36px';
-      ring.style.opacity = '0.5';
-    });
-  });
+      <div class="skills-master" data-aos="fade-up">
+        <!-- TAB BUTTONS -->
+        <div class="skill-tabs">
+          <button class="skill-tab active" data-tab="prog">Programming</button>
+          <button class="skill-tab" data-tab="ml">AI / ML</button>
+          <button class="skill-tab" data-tab="cloud">Cloud & Enterprise</button>
+          <button class="skill-tab" data-tab="bi">BI & Analytics</button>
+        </div>
 
-  // NAVBAR SCROLL
-  const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 60);
-  });
+        <!-- TAB PANELS -->
+        <div class="skill-panel active" id="tab-prog">
+          <div class="skill-bars-grid">
+            <div class="skill-row" data-pct="95"><span class="sk-name">Python</span><div class="sk-bar"><div class="sk-fill" style="--pct:95%"></div></div><span class="sk-pct">95%</span></div>
+            <div class="skill-row" data-pct="88"><span class="sk-name">SQL</span><div class="sk-bar"><div class="sk-fill" style="--pct:88%"></div></div><span class="sk-pct">88%</span></div>
+            <div class="skill-row" data-pct="78"><span class="sk-name">Java</span><div class="sk-bar"><div class="sk-fill" style="--pct:78%"></div></div><span class="sk-pct">78%</span></div>
+            <div class="skill-row" data-pct="74"><span class="sk-name">JavaScript</span><div class="sk-bar"><div class="sk-fill" style="--pct:74%"></div></div><span class="sk-pct">74%</span></div>
+            <div class="skill-row" data-pct="82"><span class="sk-name">React / Node.js</span><div class="sk-bar"><div class="sk-fill" style="--pct:82%"></div></div><span class="sk-pct">82%</span></div>
+            <div class="skill-row" data-pct="80"><span class="sk-name">FastAPI / Flask</span><div class="sk-bar"><div class="sk-fill" style="--pct:80%"></div></div><span class="sk-pct">80%</span></div>
+          </div>
+          <div class="skill-tag-cloud">
+            <span>Pandas</span><span>NumPy</span><span>Scikit-learn</span><span>TensorFlow</span><span>Keras</span><span>Matplotlib</span><span>Git/GitHub</span><span>Jupyter</span><span>Firebase</span><span>Android Studio</span>
+          </div>
+        </div>
 
-  // REVEAL ON SCROLL
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-  reveals.forEach(el => observer.observe(el));
+        <div class="skill-panel" id="tab-ml">
+          <div class="skill-bars-grid">
+            <div class="skill-row" data-pct="93"><span class="sk-name">Deep Learning</span><div class="sk-bar"><div class="sk-fill" style="--pct:93%"></div></div><span class="sk-pct">93%</span></div>
+            <div class="skill-row" data-pct="90"><span class="sk-name">NLP</span><div class="sk-bar"><div class="sk-fill" style="--pct:90%"></div></div><span class="sk-pct">90%</span></div>
+            <div class="skill-row" data-pct="88"><span class="sk-name">Agentic AI / RAG</span><div class="sk-bar"><div class="sk-fill" style="--pct:88%"></div></div><span class="sk-pct">88%</span></div>
+            <div class="skill-row" data-pct="86"><span class="sk-name">LangChain / LLMs</span><div class="sk-bar"><div class="sk-fill" style="--pct:86%"></div></div><span class="sk-pct">86%</span></div>
+            <div class="skill-row" data-pct="84"><span class="sk-name">Computer Vision</span><div class="sk-bar"><div class="sk-fill" style="--pct:84%"></div></div><span class="sk-pct">84%</span></div>
+            <div class="skill-row" data-pct="82"><span class="sk-name">Explainable AI</span><div class="sk-bar"><div class="sk-fill" style="--pct:82%"></div></div><span class="sk-pct">82%</span></div>
+          </div>
+          <div class="skill-tag-cloud">
+            <span>Vector Databases</span><span>Predictive Analytics</span><span>Clustering</span><span>Regression</span><span>Classification</span><span>Ensemble Methods</span><span>LSTM</span><span>XGBoost</span><span>SHAP</span><span>LIME</span>
+          </div>
+        </div>
 
-  // SMOOTH SCROLL
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
+        <div class="skill-panel" id="tab-cloud">
+          <div class="skill-bars-grid">
+            <div class="skill-row" data-pct="84"><span class="sk-name">AWS</span><div class="sk-bar"><div class="sk-fill" style="--pct:84%"></div></div><span class="sk-pct">84%</span></div>
+            <div class="skill-row" data-pct="82"><span class="sk-name">Salesforce</span><div class="sk-bar"><div class="sk-fill" style="--pct:82%"></div></div><span class="sk-pct">82%</span></div>
+            <div class="skill-row" data-pct="80"><span class="sk-name">ServiceNow</span><div class="sk-bar"><div class="sk-fill" style="--pct:80%"></div></div><span class="sk-pct">80%</span></div>
+            <div class="skill-row" data-pct="78"><span class="sk-name">Azure / GCP</span><div class="sk-bar"><div class="sk-fill" style="--pct:78%"></div></div><span class="sk-pct">78%</span></div>
+            <div class="skill-row" data-pct="76"><span class="sk-name">ETL Pipelines</span><div class="sk-bar"><div class="sk-fill" style="--pct:76%"></div></div><span class="sk-pct">76%</span></div>
+            <div class="skill-row" data-pct="75"><span class="sk-name">UiPath (RPA)</span><div class="sk-bar"><div class="sk-fill" style="--pct:75%"></div></div><span class="sk-pct">75%</span></div>
+          </div>
+          <div class="skill-tag-cloud">
+            <span>REST/SOAP APIs</span><span>Agile/Scrum</span><span>OpenText</span><span>Databricks</span><span>Docker</span><span>MongoDB</span>
+          </div>
+        </div>
 
-  // COUNTER ANIMATION
-  function animateCount(el, target, duration = 1500) {
-    let start = 0;
-    const step = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { el.textContent = target + (el.dataset.suffix || ''); clearInterval(timer); return; }
-      el.textContent = Math.floor(start) + (el.dataset.suffix || '');
-    }, 16);
-  }
-</script>
+        <div class="skill-panel" id="tab-bi">
+          <div class="skill-bars-grid">
+            <div class="skill-row" data-pct="90"><span class="sk-name">Tableau</span><div class="sk-bar"><div class="sk-fill" style="--pct:90%"></div></div><span class="sk-pct">90%</span></div>
+            <div class="skill-row" data-pct="87"><span class="sk-name">Power BI</span><div class="sk-bar"><div class="sk-fill" style="--pct:87%"></div></div><span class="sk-pct">87%</span></div>
+            <div class="skill-row" data-pct="92"><span class="sk-name">Excel (DAX/Power Query)</span><div class="sk-bar"><div class="sk-fill" style="--pct:92%"></div></div><span class="sk-pct">92%</span></div>
+            <div class="skill-row" data-pct="88"><span class="sk-name">Statistical Analysis</span><div class="sk-bar"><div class="sk-fill" style="--pct:88%"></div></div><span class="sk-pct">88%</span></div>
+            <div class="skill-row" data-pct="85"><span class="sk-name">A/B Testing</span><div class="sk-bar"><div class="sk-fill" style="--pct:85%"></div></div><span class="sk-pct">85%</span></div>
+            <div class="skill-row" data-pct="83"><span class="sk-name">Time-Series Analysis</span><div class="sk-bar"><div class="sk-fill" style="--pct:83%"></div></div><span class="sk-pct">83%</span></div>
+          </div>
+          <div class="skill-tag-cloud">
+            <span>EDA</span><span>Feature Engineering</span><span>Hypothesis Testing</span><span>Forecasting</span><span>Geospatial Analysis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── EXPERIENCE ─────────────── -->
+  <section id="experience" class="section">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-chip">03 — Experience</span>
+        <h2 class="section-title">Work History</h2>
+      </div>
+
+      <div class="timeline">
+
+        <div class="tl-item" data-aos="fade-up">
+          <div class="tl-left">
+            <div class="tl-dot pulse-dot"></div>
+            <div class="tl-stem"></div>
+          </div>
+          <div class="tl-card glow-card">
+            <div class="tl-header">
+              <div class="tl-header-left">
+                <span class="tl-company">ServBeyond Solutions</span>
+                <span class="tl-badge live">● Live</span>
+              </div>
+              <div class="tl-header-right">
+                <span class="tl-date">Jun 2025 – Present</span>
+                <span class="tl-loc">📍 Rockville, MD</span>
+              </div>
+            </div>
+            <h4 class="tl-role">Enterprise AI & Platform Intern</h4>
+            <ul class="tl-list">
+              <li>Configuring and administering enterprise COTS platforms — Salesforce, ServiceNow, OpenText, AWS, UiPath — ensuring optimal performance and workflow alignment.</li>
+              <li>Developing proof-of-concept workflows leveraging Agentic AI and Generative AI to automate and enhance business processes within enterprise platform ecosystems.</li>
+              <li>Building and testing REST/SOAP API integrations to enable seamless data flow between core platforms and external tools, reducing manual handoffs.</li>
+              <li>Participating in Agile/Scrum ceremonies; authoring technical documentation and user guides for internal stakeholders.</li>
+            </ul>
+            <div class="tl-tags"><span>Salesforce</span><span>ServiceNow</span><span>AWS</span><span>UiPath</span><span>Agentic AI</span><span>REST APIs</span><span>Agile</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item" data-aos="fade-up" data-aos-delay="100">
+          <div class="tl-left">
+            <div class="tl-dot pulse-dot"></div>
+            <div class="tl-stem"></div>
+          </div>
+          <div class="tl-card glow-card">
+            <div class="tl-header">
+              <div class="tl-header-left">
+                <span class="tl-company">University of Maryland, College Park</span>
+                <span class="tl-badge live">● Live</span>
+              </div>
+              <div class="tl-header-right">
+                <span class="tl-date">Mar 2026 – Present</span>
+                <span class="tl-loc">📍 College Park, MD</span>
+              </div>
+            </div>
+            <h4 class="tl-role">STEM Tutor (Part-time)</h4>
+            <ul class="tl-list">
+              <li>Tutoring veteran Engineering students one-on-one and in group sessions across CS, AI, Data Science, ML, Physics, Mathematics, and Statistics.</li>
+              <li>Designing targeted study materials, coding exercises, and problem sets tailored to individual learning gaps, consistently improving student performance.</li>
+            </ul>
+            <div class="tl-tags"><span>Teaching</span><span>AI/ML</span><span>Data Science</span><span>Mathematics</span><span>Python</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item" data-aos="fade-up" data-aos-delay="150">
+          <div class="tl-left">
+            <div class="tl-dot"></div>
+            <div class="tl-stem"></div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-header">
+              <div class="tl-header-left">
+                <span class="tl-company">YBI Foundation</span>
+              </div>
+              <div class="tl-header-right">
+                <span class="tl-date">Oct 2024 – Jan 2025</span>
+                <span class="tl-loc">📍 New Delhi, India</span>
+              </div>
+            </div>
+            <h4 class="tl-role">Data Science & AIML Engineer Intern</h4>
+            <ul class="tl-list">
+              <li>Built a handwritten digit classification system on MNIST using KNN, SVM, and CNN architectures with TensorFlow/Keras, achieving 87–92% accuracy.</li>
+              <li>Developed a bank customer churn prediction model with end-to-end EDA and Feature Engineering, delivering insights that informed retention-focused business strategies.</li>
+            </ul>
+            <div class="tl-tags"><span>TensorFlow</span><span>CNN</span><span>SVM</span><span>KNN</span><span>EDA</span><span>Feature Engineering</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item" data-aos="fade-up" data-aos-delay="200">
+          <div class="tl-left">
+            <div class="tl-dot"></div>
+            <div class="tl-stem"></div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-header">
+              <div class="tl-header-left">
+                <span class="tl-company">Nexus Info</span>
+              </div>
+              <div class="tl-header-right">
+                <span class="tl-date">Dec 2023 – Mar 2024</span>
+                <span class="tl-loc">📍 Coimbatore, India</span>
+              </div>
+            </div>
+            <h4 class="tl-role">AI/ML Engineer Intern</h4>
+            <ul class="tl-list">
+              <li>Designed a real-time NLP chatbot for college admissions using NLTK and Flask, automating query resolution and enhancing intent recognition and user engagement.</li>
+              <li>Engineered a multi-class Disease Prediction System (Gastrointestinal & Skin Disorders) using Random Forest and XGBoost with custom Feature Engineering and Ensemble Learning.</li>
+            </ul>
+            <div class="tl-tags"><span>NLTK</span><span>Flask</span><span>XGBoost</span><span>Random Forest</span><span>NLP</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item" data-aos="fade-up" data-aos-delay="250">
+          <div class="tl-left">
+            <div class="tl-dot"></div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-header">
+              <div class="tl-header-left">
+                <span class="tl-company">Codsoft</span>
+              </div>
+              <div class="tl-header-right">
+                <span class="tl-date">Aug 2023 – Sep 2023</span>
+                <span class="tl-loc">📍 Remote</span>
+              </div>
+            </div>
+            <h4 class="tl-role">Data Science Intern</h4>
+            <ul class="tl-list">
+              <li>Developed and deployed ML models for Titanic survival prediction, sales forecasting, and credit card fraud detection using classification and regression techniques in Python.</li>
+              <li>Performed data preprocessing, feature engineering, and model evaluation (precision, recall, F1-score), addressing class imbalance to enhance prediction accuracy.</li>
+            </ul>
+            <div class="tl-tags"><span>Python</span><span>Classification</span><span>Regression</span><span>Feature Engineering</span><span>EDA</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── PROJECTS ─────────────── -->
+  <section id="projects" class="section section-alt">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-chip">04 — Projects</span>
+        <h2 class="section-title">Selected Work</h2>
+      </div>
+
+      <div class="projects-grid">
+
+        <div class="proj-card featured pop-card" data-aos="fade-up">
+          <div class="proj-ribbon">🏆 Winner</div>
+          <div class="proj-num">01</div>
+          <div class="proj-award-label">UMD Agentic AI Challenge 2026</div>
+          <h3 class="proj-title">ComplaintAI</h3>
+          <p class="proj-tagline">Fintech Compliance Intelligence</p>
+          <p class="proj-desc">A 6-agent fintech compliance pipeline built on Claude AI, FastAPI, and React. Automates end-to-end complaint triage — routing, prioritizing, and resolving consumer complaints while performing real-time fairness auditing to detect bias and ensure regulatory compliance. Built on CFPB complaint data.</p>
+          <div class="proj-stack"><span>Claude AI</span><span>FastAPI</span><span>React</span><span>Multi-Agent</span><span>CFPB Data</span><span>Fairness Auditing</span></div>
+          <div class="proj-actions">
+            <a href="https://complaint-ai-kappa.vercel.app" target="_blank" class="proj-btn">Live Demo ↗</a>
+            <a href="https://github.com/esingh16/complaint-ai" target="_blank" class="proj-ghost">GitHub →</a>
+          </div>
+        </div>
+
+        <div class="proj-card pop-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="proj-ribbon">🏆 1st Place</div>
+          <div class="proj-num">02</div>
+          <div class="proj-award-label">UMD SAC Datathon 2026</div>
+          <h3 class="proj-title">Maryland TOD-AI</h3>
+          <p class="proj-tagline">Transit-Oriented Development Dashboard</p>
+          <p class="proj-desc">4 end-to-end ML pipelines across 28 real Maryland datasets. K-Means, PCA, Monte Carlo simulation, and Haversine geospatial analysis generating data-driven transit investment and equity recommendations. Deployed as a live Streamlit app.</p>
+          <div class="proj-stack"><span>Streamlit</span><span>K-Means</span><span>PCA</span><span>Monte Carlo</span><span>Geospatial</span></div>
+          <div class="proj-actions">
+            <a href="https://maryland-tod-ai.streamlit.app" target="_blank" class="proj-btn">Live Demo ↗</a>
+            <a href="https://github.com/esingh16/maryland-tod-ai" target="_blank" class="proj-ghost">GitHub →</a>
+          </div>
+        </div>
+
+        <div class="proj-card pop-card" data-aos="fade-up" data-aos-delay="150">
+          <div class="proj-ribbon">🥈 2nd Place</div>
+          <div class="proj-num">03</div>
+          <div class="proj-award-label">UMD Gemini Hackathon 2025</div>
+          <h3 class="proj-title">Care Compass</h3>
+          <p class="proj-tagline">Health-Tech Management Platform</p>
+          <p class="proj-desc">Full-stack care coordination platform with React & Node.js, FHIR standards for real-time patient risk assessment. RESTful APIs + MongoDB for high-volume concurrent patient data; Google Maps for patient-provider proximity visualization.</p>
+          <div class="proj-stack"><span>React</span><span>Node.js</span><span>FHIR</span><span>MongoDB</span><span>Google Maps API</span></div>
+        </div>
+
+        <div class="proj-card pop-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="proj-ribbon">📄 Published</div>
+          <div class="proj-num">04</div>
+          <div class="proj-award-label">WRFER National Conference</div>
+          <h3 class="proj-title">AI Career Counsellor</h3>
+          <p class="proj-tagline">Android + Voice NLP App</p>
+          <p class="proj-desc">Android application with voice-enabled NLP, Google Cloud Speech API, and GPT models. Used RAG for dynamic context-aware recommendations. Decision Trees, SVM, Random Forests, K-Means, Hierarchical clustering, and neural networks.</p>
+          <div class="proj-stack"><span>RAG</span><span>GPT</span><span>Android</span><span>NLP</span><span>GCP TTS</span></div>
+        </div>
+
+        <div class="proj-card pop-card" data-aos="fade-up" data-aos-delay="250">
+          <div class="proj-num">05</div>
+          <h3 class="proj-title">Loan Default Risk</h3>
+          <p class="proj-tagline">Explainable AI Credit System</p>
+          <p class="proj-desc">Binary classification using Gradient Boosting to estimate loan default probability, leveraging applicant financial history and complex behavioural features. Applied LIME for transparent risk insights improving credit approval decisions.</p>
+          <div class="proj-stack"><span>XGBoost</span><span>LIME</span><span>Explainable AI</span><span>Feature Engineering</span></div>
+        </div>
+
+        <div class="proj-card pop-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="proj-num">06</div>
+          <h3 class="proj-title">Stock Return Predictor</h3>
+          <p class="proj-tagline">AI-Based Risk & Return System</p>
+          <p class="proj-desc">XGBoost and LSTM models to predict stock returns and downside risk using OHLCV data. Evaluated portfolio performance via Sharpe Ratio and used SHAP values for full model explainability across prediction windows.</p>
+          <div class="proj-stack"><span>LSTM</span><span>XGBoost</span><span>SHAP</span><span>OHLCV</span><span>Sharpe Ratio</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── EDUCATION ─────────────── -->
+  <section id="education" class="section">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-chip">05 — Education</span>
+        <h2 class="section-title">Academic Background</h2>
+      </div>
+
+      <div class="edu-grid">
+        <div class="edu-card primary pop-card" data-aos="fade-right">
+          <div class="edu-top-bar"></div>
+          <div class="edu-logo">UMD</div>
+          <div class="edu-degree-name">Master of Science</div>
+          <div class="edu-major">Data Science</div>
+          <div class="edu-school">University of Maryland, College Park</div>
+          <div class="edu-dates">Aug 2025 – May 2027 · College Park, MD</div>
+          <div class="edu-gpa-wrap">
+            <span class="edu-gpa">3.83</span><span class="edu-slash">/4.0</span>
+          </div>
+          <div class="edu-courses">
+            <div class="ec-label">Key Courses</div>
+            <div class="ec-chips">
+              <span>DATA 602 · Intro to DS</span>
+              <span>DATA 603 · ML</span>
+              <span>DATA 604 · Data Modeling</span>
+              <span>DATA 605 · Big Data</span>
+              <span>DATA 606 · Algorithms</span>
+              <span>DATA 607 · Communication</span>
+              <span>DATA 643 · Time Series</span>
+              <span>MSAI 633 · Agentic AI</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="edu-card pop-card" data-aos="fade-left">
+          <div class="edu-logo">SPPU</div>
+          <div class="edu-degree-name">Bachelor of Engineering</div>
+          <div class="edu-major">AI & Data Science <small>(Honours in AIML)</small></div>
+          <div class="edu-school">Savitribai Phule Pune University</div>
+          <div class="edu-dates">Nov 2021 – Jun 2025 · Pune, India</div>
+          <div class="edu-gpa-wrap">
+            <span class="edu-gpa">3.6</span><span class="edu-slash">/4.0</span>
+          </div>
+          <div class="edu-courses">
+            <div class="ec-label">Key Courses</div>
+            <div class="ec-chips">
+              <span>Machine Learning</span>
+              <span>Deep Learning</span>
+              <span>NLP</span>
+              <span>Computer Vision</span>
+              <span>Data Mining</span>
+              <span>Statistics</span>
+              <span>Algorithms & DSA</span>
+              <span>Cloud Computing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CERTS -->
+      <div class="certs-wrap" data-aos="fade-up">
+        <h3 class="certs-title">Certifications</h3>
+        <div class="certs-list">
+          <div class="cert-item pop-card">
+            <div class="cert-logo g-logo">G</div>
+            <div class="cert-text">
+              <div class="cert-name">Google Data Analytics</div>
+              <div class="cert-issuer">Google</div>
+            </div>
+            <span class="cert-tick">✓</span>
+          </div>
+          <div class="cert-item pop-card">
+            <div class="cert-logo g-logo">G</div>
+            <div class="cert-text">
+              <div class="cert-name">Google AI Essentials</div>
+              <div class="cert-issuer">Google</div>
+            </div>
+            <span class="cert-tick">✓</span>
+          </div>
+          <div class="cert-item pop-card">
+            <div class="cert-logo ms-logo">MS</div>
+            <div class="cert-text">
+              <div class="cert-name">Data Analysis Professional</div>
+              <div class="cert-issuer">Microsoft & LinkedIn</div>
+            </div>
+            <span class="cert-tick">✓</span>
+          </div>
+          <div class="cert-item pop-card">
+            <div class="cert-logo ibm-logo">IBM</div>
+            <div class="cert-text">
+              <div class="cert-name">Python for Data Science</div>
+              <div class="cert-issuer">IBM</div>
+            </div>
+            <span class="cert-tick">✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── CONTACT ─────────────── -->
+  <section id="contact" class="section section-alt">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-chip">06 — Contact</span>
+        <h2 class="section-title">Get In Touch</h2>
+      </div>
+
+      <div class="contact-layout">
+        <div class="contact-left" data-aos="fade-right">
+          <h3 class="contact-heading">Let's build something <em>intelligent</em> together.</h3>
+          <p class="contact-sub">Actively seeking roles in Data Science, AI/ML Engineering, and Data Engineering. Open to internships, full-time roles, research collaborations, and impactful projects.</p>
+          <div class="contact-badges">
+            <span class="cbadge">🟢 Available Now</span>
+            <span class="cbadge">📍 DMV Area + Remote</span>
+            <span class="cbadge">🎓 Graduating May 2027</span>
+          </div>
+          <a href="Eshan_Resume.pdf" download class="btn-main contact-btn">
+            Download Full Resume
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v7M5 8l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+        <div class="contact-links" data-aos="fade-left">
+          <a href="mailto:esingh16@umd.edu" class="clink pop-card">
+            <div class="clink-icon">✉</div>
+            <div class="clink-body">
+              <div class="clink-label">Email</div>
+              <div class="clink-val">esingh16@umd.edu</div>
+            </div>
+            <span class="clink-arrow">↗</span>
+          </a>
+          <a href="https://linkedin.com/in/eshan-singh-708752242" target="_blank" class="clink pop-card">
+            <div class="clink-icon">in</div>
+            <div class="clink-body">
+              <div class="clink-label">LinkedIn</div>
+              <div class="clink-val">eshan-singh-708752242</div>
+            </div>
+            <span class="clink-arrow">↗</span>
+          </a>
+          <a href="https://github.com/esingh16" target="_blank" class="clink pop-card">
+            <div class="clink-icon">&lt;/&gt;</div>
+            <div class="clink-body">
+              <div class="clink-label">GitHub</div>
+              <div class="clink-val">github.com/esingh16</div>
+            </div>
+            <span class="clink-arrow">↗</span>
+          </a>
+          <a href="tel:2272591592" class="clink pop-card">
+            <div class="clink-icon">☎</div>
+            <div class="clink-body">
+              <div class="clink-label">Phone</div>
+              <div class="clink-val">227-259-1592</div>
+            </div>
+            <span class="clink-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span class="logo-e">E</span><span class="logo-s">S</span>
+        <span class="footer-copy">© 2026 Eshan Singh · MS Data Science, UMD '27</span>
+      </div>
+      <div class="footer-nav">
+        <a href="https://github.com/esingh16" target="_blank">GitHub</a>
+        <a href="https://linkedin.com/in/eshan-singh-708752242" target="_blank">LinkedIn</a>
+        <a href="mailto:esingh16@umd.edu">Email</a>
+      </div>
+      <a href="#hero" class="back-top">↑ Back to top</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
